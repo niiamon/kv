@@ -21,4 +21,23 @@ defmodule KV.Bucket do
     Agent.update(bucket, &HashDict.put(&1, key, value))
   end
 
+  @doc """
+  Deletes `key` from `bucket`.
+
+  Returns the current value of `key`, if `key` exists.
+  """
+  def delete(bucket, key) do
+    Agent.get_and_update(bucket, fn dict->
+      HashDict.pop(dict, key)
+    end)
+  end
+
+  def delete1(bucket, key) do
+    :timer.sleep(1000) # puts client to sleep
+    Agent.get_and_update(bucket, fn dict ->
+      :timer.sleep(1000) # puts server to sleep
+      HashDict.pop(dict, key)
+    end)
+  end
+
 end
